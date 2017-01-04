@@ -25,13 +25,9 @@ public class CJActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         dbh = new DBHandler(this);
-        try {
-            dbh.create();
-        } catch (IOException ioe) {
-            throw new Error("Unable to create database");
-        }
+        dbh.open();
+
     }
 
 

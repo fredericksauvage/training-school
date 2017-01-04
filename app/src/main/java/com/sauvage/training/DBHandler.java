@@ -58,36 +58,12 @@ public class DBHandler extends MigratableDatabase{
 
     // Creates a empty database on the system and rewrites it with your own database.
     public void create() throws IOException {
-        boolean dbExist = checkDataBase();
-
-        if (dbExist) {
-            //do nothing - database already exist
-        } else {
-            // By calling this method and empty database will be created into the default system path
-            // of your application so we are gonna be able to overwrite that database with our database.
-            this.getReadableDatabase();
-            try {
-                copyDataBase();
-            } catch (IOException e) {
-                throw new Error("Error copying database");
-            }
-        }
-    }
-    // Check if the database exist to avoid re-copy the data
-    private boolean checkDataBase() {
-        SQLiteDatabase checkDB = null;
+        this.getReadableDatabase();
         try {
-            String path = DB_PATH + DB_NAME;
-            checkDB = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
-            int i = 1;
-        } catch (SQLiteException e) {
-            // database don't exist yet.
-            e.printStackTrace();
+            copyDataBase();
+        } catch (IOException e) {
+            throw new Error("Error copying database");
         }
-        if (checkDB != null) {
-            checkDB.close();
-        }
-        return checkDB != null ? true : false;
     }
 
     // copy your assets db
@@ -111,6 +87,7 @@ public class DBHandler extends MigratableDatabase{
         myOutput.flush();
         myOutput.close();
         myInput.close();
+        this.open();
     }
 
     public void migration_0(SQLiteDatabase db){
@@ -167,14 +144,20 @@ public class DBHandler extends MigratableDatabase{
 
     //Open the database
     public boolean open() {
+        String myPath = DB_PATH + DB_NAME;
         try {
-
-            String myPath = DB_PATH + DB_NAME;
             database = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
             return true;
-        } catch (SQLException sqle) {
-            database = null;
-            return false;
+        } catch (SQLException e1) {
+            try {
+                this.create();
+                database = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
+                return true;
+            } catch (Exception e2) {
+                database = null;
+                e2.printStackTrace();
+                return false;
+            }
         }
     }
 
