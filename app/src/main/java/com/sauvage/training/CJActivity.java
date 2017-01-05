@@ -100,14 +100,14 @@ public class CJActivity extends AppCompatActivity {
     }
 
     public void fillForm(){
-        EditText g = (EditText) findViewById(R.id.pers_0);
-        EditText v = (EditText) findViewById(R.id.pers_1);
-        EditText m = (EditText) findViewById(R.id.pers_2);
-        EditText t = (EditText) findViewById(R.id.pers_3);
-        g.setText(app.conjugaison.group.toString());
-        v.setText(app.conjugaison.verb.toString());
-        m.setText(app.conjugaison.mode.toString());
-        t.setText(app.conjugaison.temps.toString());
+        String resume = app.conjugaison.group.toString()
+                + "/" + app.conjugaison.verb.toString()
+                + "/" + app.conjugaison.mode.toString()
+                + "/" + app.conjugaison.temps.toString();
+
+        TextView tv = (TextView) findViewById(R.id.resume);
+
+        tv.setText(resume);
     }
 
     @Override
