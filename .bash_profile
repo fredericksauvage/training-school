@@ -12,7 +12,15 @@ export PATH="$HOME/.composer/vendor/bin:$PATH"
 source /usr/local/etc/bash_completion.d/git-completion.bash
 
 parse_git_branch() {
-  GITSTT=$(git status)
+
+  GITSTT=$(git status 2> /dev/null)
+
+  #check if current directory is managed by GIT
+  if [[ ${#GITSTT}  -eq 0 ]]
+  then
+    return
+  fi
+
   MSGSTT=""
 
 
